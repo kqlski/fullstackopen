@@ -1,26 +1,14 @@
-import React from 'react'
-const Hello = (props) => {
+import React, { useState } from 'react'
+const App = (props) => {
+  const [counter, setCounter] = useState(0)
+
   return (
     <div>
-      <p>
-        Hello {props.name}, you are {props.age} years old
-      </p>
+      <div>{counter}</div>
+      <button onClick={()=>setCounter(counter+1)}>
+        hello team
+      </button>
     </div>
   )
 }
-
-const App = () => {
-
-  const nimi = 'Pekka'
-  const ika = 10
-
-  return (
-    <>
-      <h1>Greetings</h1>
-      <Hello name="Maya" age={10} />
-      <Hello name={nimi} age={ika} />
-    </>
-  )
-}
-
 export default App
