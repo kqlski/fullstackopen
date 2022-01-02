@@ -21,14 +21,20 @@ const App = () => {
   const [topAnecdote,setTopAnecdote] = useState(0)
   const [selected, setSelected] = useState(0)
   const [votes, setVote]= useState([0,0,0,0,0,0,0])
-  const random =()=> (Math.floor(Math.random()*7))
+  const next =()=>{
+    let random = (Math.floor(Math.random()*anecdotes.length))
+    while (random === selected){
+      random = (Math.floor(Math.random()*anecdotes.length))
+    }
+    setSelected(random)
+  }
   return (
     <div>
       <h1>Anecdote of the day</h1>
       <p>{anecdotes[selected]}</p>
       <p>has {votes[selected]} votes</p>
       <button onClick={voteClick}>vote</button>
-      <button onClick={()=>setSelected(random())}>next anecdote</button>
+      <button onClick={next}>next anecdote</button>
       <h1>Anecdote with most votes</h1>
       <p>{anecdotes[topAnecdote]}</p>
       <p>has {votes[topAnecdote]} votes</p>
