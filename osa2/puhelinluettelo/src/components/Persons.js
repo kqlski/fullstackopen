@@ -1,15 +1,29 @@
 import React, { useEffect } from 'react'
 import Button from './Button'
 import db from '../services/db'
-const Persons =({persons, _filter,setPersons})=>{
+const Persons =({persons, _filter,setPersons,setInfoMessage})=>{
   const remove =(person)=> {
 
 
-    if(window.confirm(`Delele${person.name} ?`)){
+    if(window.confirm(`Delele ${person.name} ?`)){
       db.remove(person.id)
       .then(()=>{
         console.log(person)
-         setPersons(persons.filter(n=>n!=person)) 
+         setPersons(persons.filter(n=>n!=person))
+          setInfoMessage(
+            {message:`Removed ${person.name}`,color:'green'}
+            )
+            setTimeout(()=>{
+              setInfoMessage({message:null})
+            },3000)
+      })
+      .catch(error=>{
+        setInfoMessage(
+          {message:`Error: ${person.name} has already been removed from server`,color:'red'}
+          )
+          setTimeout(()=>{
+            setInfoMessage({message:null})
+          },3000)
       })
   }
   }

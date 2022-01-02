@@ -1,6 +1,6 @@
 import React from 'react'
 import db from '../services/db'
-const PersonForm = ({ newName, setNewName, newNumber, setNewNumber, persons, setPersons }) => {
+const PersonForm = ({ newName, setNewName, newNumber, setNewNumber, persons, setPersons, setInfoMessage }) => {
     const addName = (event) => {
         event.preventDefault()
         const nameObject = {
@@ -13,11 +13,31 @@ const PersonForm = ({ newName, setNewName, newNumber, setNewNumber, persons, set
                 `${newName} is already added to phonebook, 
                 replace the old number with a new one?`
             )) {
-                db.update(person.id, {...person,number:newNumber})
+                db.update(person.id, { ...person, number: newNumber })
                     .then((updated) => {
-                        setPersons(persons.map(n=> n.id!== person.id ? n : updated))
+                        setPersons(persons.map(n => n.id !== person.id ? n : updated))
                         setNewName('')
                         setNewNumber('')
+                        setInfoMessage(
+                            {
+                                message: `Updated ${person.name}`,
+                                color: 'green'
+                            }
+                        )
+                        setTimeout(() => {
+                            setInfoMessage({ message: null })
+                        }, 3000)
+                    })
+                    .catch(error => {
+                        setInfoMessage(
+                            {
+                                message: `Information of ${person.name} has already been removed from server`,
+                                color: 'red'
+                            }
+                        )
+                        setTimeout(() => {
+                            setInfoMessage({ message: null })
+                        }, 3000)
                     })
             }
         } else {
@@ -26,6 +46,15 @@ const PersonForm = ({ newName, setNewName, newNumber, setNewNumber, persons, set
                     setPersons(persons.concat(returnedPerson))
                     setNewName('')
                     setNewNumber('')
+                    setInfoMessage(
+                        {
+                            message: `Added ${returnedPerson.name}`,
+                            color: 'green'
+                        }
+                    )
+                    setTimeout(() => {
+                        setInfoMessage({ message: null })
+                    }, 3000)
                 })
         }
     }
