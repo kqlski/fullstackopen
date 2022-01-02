@@ -7,8 +7,8 @@ function App() {
   const [_filter, setFilter] = useState('')
   const [weather, setWeather] = useState([])
   const [cityName, setCityName] = useState('')
-  const api_key = process.env.REACT_APP_API_KEY
   useEffect(() => {
+    const api_key = process.env.REACT_APP_API_KEY
     console.log('effect2');
     axios
       .get(`http://api.weatherstack.com/current?access_key=${api_key}&query=${cityName}&units=m`)
