@@ -11,7 +11,24 @@ const Display = ({ data, _filter, setFilter, weather, setCityName }) => {
 
     const filteredData = data
         .filter(n => n.name.common.toLowerCase().includes(_filter.toLowerCase()))
-    
+        const name = filteredData.find(n=> n.name.common.toLowerCase()===_filter.toLowerCase())
+        if(name!==undefined){
+            console.log('works')
+            const country = name
+        return (
+            <div>
+                <h1>{country.name.common}</h1>
+                <p>capital {country.capital}</p>
+                <p>population {country.population}</p>
+                <h2>languages</h2>
+                <ul>
+                    <Languages languages={country.languages} />
+                </ul>
+                <img src={country.flags.svg} alt="flag" width="200" />
+                <Weather weather={weather} name={country.capital} setCityName={setCityName}/>
+            </div>
+        )
+        }
     if (filteredData.length > 10) return ('Too many matches, specify another filter')
     if (filteredData.length === 1) {
 
