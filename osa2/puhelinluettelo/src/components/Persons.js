@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import Button from './Button'
 import db from '../services/db'
 const Persons =({persons, _filter,setPersons,setInfoMessage})=>{
@@ -9,7 +9,7 @@ const Persons =({persons, _filter,setPersons,setInfoMessage})=>{
       db.remove(person.id)
       .then(()=>{
         console.log(person)
-         setPersons(persons.filter(n=>n!=person))
+         setPersons(persons.filter(n=>n!==person))
           setInfoMessage(
             {message:`Removed ${person.name}`,color:'green'}
             )
