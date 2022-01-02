@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import Persons from './components/Persons'
 import Filter from './components/Filter'
-import axios from 'axios'
+import db from './services/db'
 import PersonForm from './components/PersonForm'
 
 
@@ -13,11 +13,11 @@ const App = () => {
   
   useEffect(()=>{
     console.log('effect');
-    axios
-      .get('http://localhost:3001/persons')
-      .then(response=>{
+    db.getAll()
+      .then(persons=>{
        console.log('fulfilled'); 
-       setPersons(response.data)
+       console.log(persons)
+       setPersons(persons)
       })
   },[])
 
@@ -35,7 +35,7 @@ const App = () => {
         setPersons={setPersons}
       />
       <h3>Numbers</h3>
-      <Persons persons={persons} filter={_filter} />
+      <Persons persons={persons} _filter={_filter} setPersons={setPersons} />
     </div>
   )
 

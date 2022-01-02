@@ -1,34 +1,50 @@
 import React from 'react'
-const PersonForm = ({newName, setNewName,newNumber,setNewNumber,persons,setPersons}) => {
+import db from '../services/db'
+const PersonForm = ({ newName, setNewName, newNumber, setNewNumber, persons, setPersons }) => {
     const addName = (event) => {
-        if (persons.find(n => n.name === newName)) {
-          return alert(`${newName} is already added to phonebook`)
-        }
         event.preventDefault()
         const nameObject = {
-          name: newName,
-          number: newNumber
+            name: newName,
+            number: newNumber
         }
-        setPersons(persons.concat(nameObject))
-        setNewName('')
-        setNewNumber('')
-      }
+        const person = persons.find(n => n.name === newName)
+        if (person !== undefined) {
+            if (window.confirm(
+                `${newName} is already added to phonebook, 
+                replace the old number with a new one?`
+            )) {
+                db.update(person.id, {...person,number:newNumber})
+                    .then((updated) => {
+                        setPersons(persons.map(n=> n.id!== person.id ? n : updated))
+                        setNewName('')
+                        setNewNumber('')
+                    })
+            }
+        } else {
+            db.create(nameObject)
+                .then((returnedPerson) => {
+                    setPersons(persons.concat(returnedPerson))
+                    setNewName('')
+                    setNewNumber('')
+                })
+        }
+    }
     return (
-    <form onSubmit={addName}>
-        <div>
-            name: <input
-                value={newName}
-                onChange={(event) => setNewName(event.target.value)}
-            />
-        </div>
-        <div>number: <input
-            value={newNumber}
-            onChange={(event) => setNewNumber(event.target.value)}
-        /></div>
-        <div>
-            <button type="submit">add</button>
-        </div>
-    </form>
+        <form onSubmit={addName}>
+            <div>
+                name: <input
+                    value={newName}
+                    onChange={(event) => setNewName(event.target.value)}
+                />
+            </div>
+            <div>number: <input
+                value={newNumber}
+                onChange={(event) => setNewNumber(event.target.value)}
+            /></div>
+            <div>
+                <button type="submit">add</button>
+            </div>
+        </form>
     )
 }
 export default PersonForm
