@@ -4,10 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node index.js",
     "dev": "nodemon index.js",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "test":"jest --verbose"
   },
   "author": "Kalle Ahlström",
   "license": "MIT",
@@ -19,6 +19,10 @@
   },
   "devDependencies": {
     "eslint": "^8.6.0",
+    "jest": "^27.4.5",
     "nodemon": "^2.0.15"
+  },
+  "jest":{
+    "testEnvironment":"node"
   }
 }
