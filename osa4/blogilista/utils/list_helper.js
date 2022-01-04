@@ -17,18 +17,17 @@ const favoriteBlog = (blogs) => {
     likes: favorite.likes
   }
 }
-
-const mostBlogs = (blogs) => {
-  const uniqueAuthors = () => {
-    let filtered = []
-    for (const n of blogs.map(n => n.author)) {
-      filtered = filtered.includes(n)
-        ? filtered
-        : filtered.concat(n)
-    }
-    return filtered
+const uniqueAuthors = (blogs) => {
+  let filtered = []
+  for (const n of blogs.map(n => n.author)) {
+    filtered = filtered.includes(n)
+      ? filtered
+      : filtered.concat(n)
   }
-  const names = uniqueAuthors()
+  return filtered
+}
+const mostBlogs = (blogs) => {
+  const names = uniqueAuthors(blogs)
   const books = names.map(n => {
     return blogs.filter(blog => blog.author === n).length
   })
@@ -44,4 +43,23 @@ const mostBlogs = (blogs) => {
     blogs: mostBlogger.books
   })
 }
-module.exports = { dummy, totalLikes, favoriteBlog, mostBlogs }
+const mostLikes = (blogs) => {
+  const names = uniqueAuthors(blogs)
+  const likes = names.map(n => {
+    return blogs
+      .filter(blog => blog.author === n)
+      .map(n => n.likes)
+  })
+  const namesAndLikes = names
+    .map((a, i) => {
+      return { author: a, likes: likes[i].reduce((a, b) => a + b) }
+    })
+  console.log(namesAndLikes)
+  const mostestBlogger = namesAndLikes.reduce((a, b) => a.likes > b.likes ? a : b)
+  return ({
+    author: mostestBlogger.author,
+    likes: mostestBlogger.likes
+  })
+}
+
+module.exports = { dummy, totalLikes, favoriteBlog, mostBlogs, mostLikes }
