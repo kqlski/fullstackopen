@@ -56,6 +56,17 @@ const PersonForm = ({ newName, setNewName, newNumber, setNewNumber, persons, set
                         setInfoMessage({ message: null })
                     }, 3000)
                 })
+                .catch(error => {
+                    setInfoMessage(
+                        {
+                            message: error.response.data,
+                            color: 'red'
+                        }
+                    )
+                    setTimeout(() => {
+                        setInfoMessage({ message: null })
+                    }, 3000)
+                })
         }
     }
     return (
