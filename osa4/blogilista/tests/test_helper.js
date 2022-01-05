@@ -7,7 +7,7 @@ const initialBlogs = [{
   title: 'how to win at life',
   author: 'unknown',
   url: 'https://lmgtfy.app/?q=how+to+win+at+life',
-  __v: 0
+  likes: 5
 }]
 module.exports = {
   blogsinDb, initialBlogs

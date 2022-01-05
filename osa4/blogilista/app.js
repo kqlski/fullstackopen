@@ -1,4 +1,5 @@
 const config = require('./utils/config')
+const middleware = require('./utils/middleware')
 const express = require('express')
 require('express-async-errors')
 const blogsRouter = require('./controllers/blogs')
@@ -13,5 +14,5 @@ app.use(cors())
 app.use(express.json())
 
 app.use('/api/blogs', blogsRouter)
-
-module.exports=app
+app.use(middleware.errorHandler)
+module.exports = app

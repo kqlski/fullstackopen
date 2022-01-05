@@ -28,7 +28,6 @@ test('returns the blog id as \'id\' rather than \'_id\'', async () => {
 })
 
 test('create new blog properly that changes database size', async () => {
-  const blogsAtStart = await helper.blogsinDb()
   const newBlog = {
     title: 'life of Patrick',
     author: 'Patrick',
@@ -40,10 +39,36 @@ test('create new blog properly that changes database size', async () => {
     .send(newBlog)
     .expect(201)
     .expect('Content-Type', /application\/json/)
-  const addedBlog =response.body
+  const addedBlog = response.body
   const blogsInEnd = await helper.blogsinDb()
-  expect(blogsInEnd).toHaveLength(blogsAtStart.length + 1)
+  expect(blogsInEnd).toHaveLength(helper.initialBlogs.length + 1)
   expect(addedBlog).toEqual(JSON.parse(JSON.stringify({ ...newBlog, id: addedBlog.id })))
+})
+
+test('creating a blog without likes', async () => {
+  const noLikesBlog = {
+    title: 'NickALive!',
+    author: 'unknown',
+    url: 'http://www.nickalive.net/',
+  }
+  const response = await api
+    .post('/api/blogs')
+    .send(noLikesBlog)
+    .expect(201)
+  expect(response.body.likes).toEqual(0)
+})
+
+test('creating a blog without title or url should not work', async () => {
+  const whatBlogIsThis = {
+    author: 'Spongebob Squarepants',
+    likes: Number.MAX_SAFE_INTEGER
+  }
+  await api
+    .post('/api/blogs')
+    .send(whatBlogIsThis)
+    .expect(400)
+  const blogsInEnd = await helper.blogsinDb()
+  expect(blogsInEnd).toHaveLength(helper.initialBlogs.length)
 })
 
 afterAll(() => {
