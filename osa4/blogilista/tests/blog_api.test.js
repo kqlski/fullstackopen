@@ -71,6 +71,32 @@ test('creating a blog without title or url should not work', async () => {
   expect(blogsInEnd).toHaveLength(helper.initialBlogs.length)
 })
 
+test('removing a blog from the list', async () => {
+  const blogs = await helper.blogsinDb()
+  const removeId = blogs[0].id
+  await api
+    .delete(`/api/blogs/${removeId}`)
+    .expect(204)
+  const blogsInEnd = await helper.blogsinDb()
+  expect(blogsInEnd).toHaveLength(helper.initialBlogs.length - 1)
+})
+
+test('update a blog', async () => {
+  const blogs = await helper.blogsinDb()
+  const updated = {
+    ...blogs[0],
+    likes: 1337
+  }
+  const id = updated.id
+  await api
+    .put(`/api/blogs/${id}`)
+    .send(updated)
+    .expect(200)
+  const newAndImproved = await Blog.findById(id)
+  console.log(newAndImproved)
+  expect(newAndImproved.likes).toEqual(updated.likes)
+})
+
 afterAll(() => {
   mongoose.connection.close()
 })

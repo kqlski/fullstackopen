@@ -1,8 +1,9 @@
-POST  http://localhost:3001/api/blogs
+PUT http://localhost:3001/api/blogs/61d5294af896873edd95b3a2
 Content-Type: application/json
 
 {
   "title":"JavaScript For Dummies",
   "author":"Emily A. Vander Veer",
-  "url":"lutrejects.fi"
+  "url":"lutrejects.fi",
+  "likes":50000
 }
