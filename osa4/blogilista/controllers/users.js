@@ -4,7 +4,10 @@ const User = require('../models/user')
 
 usersRouter.post('/', (request, response, next) => {
   const body = request.body
-
+  console.log(body.password, typeof body.password)
+  if (!body.password || body.password.length < 3) {
+    return response.status(400).json({ error: 'password needs to be at least 3 characters long' })
+  }
   const saltRounds = 10
   bcrypt.hash(body.password, saltRounds)
     .then((result) => {
