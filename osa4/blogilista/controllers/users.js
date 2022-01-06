@@ -1,0 +1,30 @@
+const usersRouter = require('express').Router()
+const bcrypt = require('bcrypt')
+const User = require('../models/user')
+
+usersRouter.post('/', (request, response, next) => {
+  const body = request.body
+
+  const saltRounds = 10
+  bcrypt.hash(body.password, saltRounds)
+    .then((result) => {
+      const user = new User({
+        username: body.username,
+        name: body.name,
+        passwordHash: result
+      })
+      user.save()
+        .then((result) => response.json(result))
+        .catch(error => next(error))
+    })
+    .catch(error => next(error))
+})
+
+usersRouter.get('/', (request, response) => {
+  User.find({})
+    .then((result) => {
+      response.json(result)
+    })
+})
+
+module.exports = usersRouter
