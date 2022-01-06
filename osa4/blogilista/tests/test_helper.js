@@ -12,12 +12,15 @@ const initialBlogs = [{
   url: 'https://lmgtfy.app/?q=how+to+win+at+life',
   likes: 5
 }]
-
+const testUser = {
+  username: 'test',
+  password: 'test'
+}
 const usersInDb = async () => {
   const users = await User.find({})
   return users.map(n => n.toJSON())
 }
 
 module.exports = {
-  blogsinDb, initialBlogs,usersInDb
+  blogsinDb, initialBlogs, usersInDb, testUser
 }

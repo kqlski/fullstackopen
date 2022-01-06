@@ -1,8 +1,9 @@
 POST  http://localhost:3001/api/blogs
 Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYxZDc0OTVhZWUxN2M3Y2NjMGE0OWFhNSIsImlhdCI6MTY0MTQ5OTgyOSwiZXhwIjoxNjQxNTAzNDI5fQ.nuOIUvOntIM8IZkNWNwt6ubao1fsoWHA1StkpZsFGPs
 
 {
-  "title":"JavaScript For Dummies",
-  "author":"Emily A. Vander Veer",
-  "url":"lutrejects.fi"
+  "title":"what is this For Dummies",
+  "author":"Emily A. Vander Meer",
+  "url":"aaltorejects.fi"
 }

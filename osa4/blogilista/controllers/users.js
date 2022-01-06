@@ -24,7 +24,7 @@ usersRouter.post('/', (request, response, next) => {
 })
 
 usersRouter.get('/', (request, response) => {
-  User.find({})
+  User.find({}).populate('blogs', { title: 1, author: 1, url: 1, id: 1, likes: 1 })
     .then((result) => {
       response.json(result)
     })

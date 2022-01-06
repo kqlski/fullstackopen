@@ -6,10 +6,20 @@ const api = supertest(app)
 const Blog = require('../models/blog')
 const User = require('../models/user')
 
+let tokenString = ''
+
 describe('blogs', () => {
   beforeEach(async () => {
     await Blog.deleteMany({})
-    await Blog.insertMany(helper.initialBlogs)
+    await User.deleteMany({})
+    const testUser = await api
+      .post('/api/users')
+      .send(helper.testUser)
+    const res = await api
+      .post('/api/login')
+      .send(helper.testUser)
+    tokenString = `Bearer ${res.body.token}`
+    await Blog.insertMany(helper.initialBlogs.map(n => ({ ...n, user: testUser.body.id })))
   })
   test('blogs are returned as JSON', async () => {
     await api
@@ -36,15 +46,17 @@ describe('blogs', () => {
       url: 'https://en.wikipedia.org/wiki/Patrick_Star',
       likes: 5
     }
+    console.log(tokenString)
     const response = await api
       .post('/api/blogs')
+      .set('Authorization', tokenString)
       .send(newBlog)
       .expect(201)
       .expect('Content-Type', /application\/json/)
     const addedBlog = response.body
     const blogsInEnd = await helper.blogsinDb()
     expect(blogsInEnd).toHaveLength(helper.initialBlogs.length + 1)
-    expect(addedBlog).toEqual(JSON.parse(JSON.stringify({ ...newBlog, id: addedBlog.id })))
+    expect(addedBlog).toEqual(JSON.parse(JSON.stringify({ ...newBlog, id: addedBlog.id, user: addedBlog.user })))
   })
 
   test('creating a blog without likes', async () => {
@@ -55,6 +67,7 @@ describe('blogs', () => {
     }
     const response = await api
       .post('/api/blogs')
+      .set('Authorization', tokenString)
       .send(noLikesBlog)
       .expect(201)
     expect(response.body.likes).toEqual(0)
@@ -67,6 +80,7 @@ describe('blogs', () => {
     }
     await api
       .post('/api/blogs')
+      .set('Authorization', tokenString)
       .send(whatBlogIsThis)
       .expect(400)
     const blogsInEnd = await helper.blogsinDb()
@@ -75,9 +89,11 @@ describe('blogs', () => {
 
   test('removing a blog from the list', async () => {
     const blogs = await helper.blogsinDb()
+    console.log(blogs)
     const removeId = blogs[0].id
     await api
       .delete(`/api/blogs/${removeId}`)
+      .set('Authorization', tokenString)
       .expect(204)
     const blogsInEnd = await helper.blogsinDb()
     expect(blogsInEnd).toHaveLength(helper.initialBlogs.length - 1)
@@ -149,7 +165,21 @@ describe('users', () => {
     expect(result.body.error).toContain('`username` is required')
   })
 
-
+  test('create new blog without token', async () => {
+    const newBlog = {
+      title: 'life of Patrick',
+      author: 'Patrick',
+      url: 'https://en.wikipedia.org/wiki/Patrick_Star',
+      likes: 5
+    }
+    console.log(tokenString)
+    await api
+      .post('/api/blogs')
+      .send(newBlog)
+      .expect(401)
+    const blogsInEnd = await helper.blogsinDb()
+    expect(blogsInEnd).toHaveLength(helper.initialBlogs.length)
+  })
 
 })
 afterAll(() => {

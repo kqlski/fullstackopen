@@ -7,7 +7,8 @@
     "start": "cross-env NODE_ENV=production node index.js",
     "dev": "cross-env NODE_ENV=development nodemon index.js",
     "lint": "eslint .",
-    "test": "cross-env NODE_ENV=test jest --verbose --runInBand"
+    "test": "cross-env NODE_ENV=test jest --verbose --runInBand",
+    "devtest":"cross-env NODE_ENV=test nodemon index.js"
   },
   "author": "Kalle Ahlström",
   "license": "MIT",
@@ -17,8 +18,9 @@
     "dotenv": "^10.0.0",
     "express": "^4.17.2",
     "express-async-errors": "^3.1.1",
-    "mongoose": "^6.1.4",
-    "mongoose-unique-validator": "^3.0.0"
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^6.1.5",
+    "mongoose-unique-validator": "^2.0.1"
   },
   "devDependencies": {
     "cross-env": "^7.0.3",
