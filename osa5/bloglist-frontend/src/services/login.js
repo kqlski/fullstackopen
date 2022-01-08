@@ -6,4 +6,5 @@ const login = async credentials => {
   console.log(response.data)
   return response.data
 }
+
 export default { login }

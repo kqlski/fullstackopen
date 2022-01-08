@@ -44,12 +44,12 @@ const App = () => {
       setMessage({ message: 'login succesful', color: 'green' })
       setTimeout(() => {
         setMessage({ message: null })
-      }, 3000);
+      }, 3000)
     } catch (exception) {
       setMessage({ message: 'wrong username/password', color: 'red' })
       setTimeout(() => {
         setMessage({ message: null })
-      }, 5000);
+      }, 5000)
     }
   }
 
@@ -62,14 +62,14 @@ const App = () => {
         setMessage({ message: `a new blog ${blog.title} by ${blog.author} added`, color: 'green' })
         setTimeout(() => {
           setMessage({ message: null })
-        }, 3000);
+        }, 3000)
       })
       .catch(result => {
         console.log(result)
-        setMessage({ message: `adding blog failed, title and url are required fields.`, color: 'red' })
+        setMessage({ message: 'adding blog failed, title and url are required fields.', color: 'red' })
         setTimeout(() => {
           setMessage({ message: null })
-        }, 3000);
+        }, 3000)
       })
   }
   const addLike = (blog) => {
@@ -77,7 +77,7 @@ const App = () => {
   }
   const removeBlog = (blog) => {
     blogService.remove(blog)
-      .then(response => {
+      .then(() => {
         setBlogs(blogs.filter(n => n !== blog))
       })
       .catch(exception => {
@@ -98,7 +98,7 @@ const App = () => {
     setMessage({ message: 'you logged yourself out', color: 'green' })
     setTimeout(() => {
       setMessage({ message: null })
-    }, 3000);
+    }, 3000)
   }
 
   if (user === null) {
