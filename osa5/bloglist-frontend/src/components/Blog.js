@@ -22,11 +22,11 @@ const Blog = ({ blog, addLike, remove, userId }) => {
     marginBottom: 5
   }
   return (
-    <div style={blogStyle}>
+    <div style={blogStyle} className='blog'>
       {blog.title} {blog.author}<button onClick={toggleVisibility}>{visible ? 'hide' : 'view'}</button>
-      <div style={showWhenVisible}>
+      <div style={showWhenVisible} className='togglable'>
         <div>{blog.url}</div>
-        <div>likes {likes} <button onClick={handleLike}>like</button></div>
+        <div>likes {likes} <button onClick={handleLike} className='likeButton'>like</button></div>
         <div>{blog.user ? blog.user.name : null}</div>
         {blog.user === userId || blog.user.id === userId ? <button onClick={handleRemove}>remove</button> : null}
       </div>
@@ -35,9 +35,9 @@ const Blog = ({ blog, addLike, remove, userId }) => {
 }
 Blog.propTypes = {
   blog:PropTypes.object.isRequired,
-  addLike:PropTypes.func.isRequired,
-  remove:PropTypes.func.isRequired,
-  userId:PropTypes.string.isRequired,
+  addLike:PropTypes.func,
+  remove:PropTypes.func,
+  userId:PropTypes.string,
 }
 
 export default Blog
