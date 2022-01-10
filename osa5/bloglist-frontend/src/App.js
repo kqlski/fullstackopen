@@ -16,7 +16,7 @@ const App = () => {
   const blogFormRef = useRef()
   useEffect(() => {
     blogService.getAll().then(blogs =>
-      setBlogs(blogs)
+      setBlogs(blogs.sort((a, b) => b.likes - a.likes))
     )
   }, [])
   useEffect(() => {
@@ -58,7 +58,7 @@ const App = () => {
     blogService.createBlog(blog)
       .then(response => {
         console.log(response)
-        setBlogs(blogs.concat(response))
+        setBlogs(blogs.concat(response).sort((a, b) => b.likes - a.likes))
         setMessage({ message: `a new blog ${blog.title} by ${blog.author} added`, color: 'green' })
         setTimeout(() => {
           setMessage({ message: null })
@@ -74,6 +74,13 @@ const App = () => {
   }
   const addLike = (blog) => {
     blogService.update({ ...blog, likes: blog.likes + 1 })
+    console.log(blogs)
+    setBlogs(blogs.
+      map(n => n.id !== blog.id
+        ? n
+        : { ...blog, likes: blog.likes + 1 })
+      .sort((a, b) => b.likes - a.likes)
+    )
   }
   const removeBlog = (blog) => {
     blogService.remove(blog)
@@ -109,13 +116,13 @@ const App = () => {
         <form onSubmit={handleLogin}>
           <div>
             <label> username
-              <input type='username' value={username} onChange={({ target }) => setUsername(target.value)} />
+              <input id='username' type='username' value={username} onChange={({ target }) => setUsername(target.value)} />
             </label>
           </div>
           <div>
             <label>
               password
-              <input type='password' value={password} onChange={({ target }) => setPassword(target.value)} />
+              <input id='password' type='password' value={password} onChange={({ target }) => setPassword(target.value)} />
             </label>
           </div>
           <button type='submit'>login</button>
@@ -130,8 +137,8 @@ const App = () => {
       <Notification message={message.message} color={message.color} />
       <p>{user.name} logged in<button type='button' onClick={logout}>logout</button></p>
       {blogForm()}
-      {blogs.sort((a, b) => b.likes - a.likes).map(blog =>
-        <Blog key={blog.id} blog={blog} addLike={addLike} remove={removeBlog} userId={user.id} />
+      {blogs.map(blog =>
+        <Blog className='blog' key={blog.id} blog={blog} addLike={addLike} remove={removeBlog} userId={user.id} />
       )}
     </div>
   )
