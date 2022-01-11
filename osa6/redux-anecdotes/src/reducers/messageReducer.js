@@ -9,11 +9,12 @@ const messageReducer = (state = '', action) => {
   }
 
 }
-
+let prevTimeoutID;
 export const setNotification = (message, time) => {
   return dispatch => {
     dispatch({ type: 'SET', message })
-    setTimeout(() => dispatch({ type: 'REMOVE' }), time * 1000)
+    clearTimeout(prevTimeoutID)
+    prevTimeoutID = setTimeout(() => dispatch({ type: 'REMOVE' }), time * 1000)
   }
 }
 
