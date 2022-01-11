@@ -1,15 +1,22 @@
-
-
-
+import anecdoteService from "../services/anecdotes"
 
 export const createAnecdote = content => {
-  return { data: content, type: 'CREATE' }
+  return async dispatch => {
+    const newAnecdote = await anecdoteService.createNew(content)
+    dispatch({ type: 'CREATE', data: newAnecdote })
+  }
 }
 
 export const iniliatizeAnecdotes = anecdotes => {
-  return {
-    type: 'INIT',
-    data: anecdotes
+  return async dispatch => {
+    const anecdotes = await anecdoteService.getAll()
+    dispatch({ type: 'INIT', data: anecdotes })
+  }
+}
+export const addVote = anecdote => {
+  return async dispatch => {
+    const updatedAnecdote = await anecdoteService.update(anecdote)
+    dispatch({ type: 'VOTE', data: updatedAnecdote })
   }
 }
 const reducer = (state = [], action) => {

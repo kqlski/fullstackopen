@@ -1,7 +1,7 @@
 const messageReducer = (state = '', action) => {
   switch (action.type) {
     case 'SET':
-      return action.data.message
+      return action.message
     case 'REMOVE':
       return ''
     default:
@@ -10,18 +10,12 @@ const messageReducer = (state = '', action) => {
 
 }
 
-export const setMessage = (message) => {
-  return ({
-    type: 'SET',
-    data: {
-      message
-    }
-  })
+export const setNotification = (message, time) => {
+  return dispatch => {
+    dispatch({ type: 'SET', message })
+    setTimeout(() => dispatch({ type: 'REMOVE' }), time * 1000)
+  }
 }
-export const removeMessage = () => {
-  return ({
-    type: 'REMOVE'
-  })
-}
+
 
 export default messageReducer
