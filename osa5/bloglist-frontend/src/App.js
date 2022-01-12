@@ -5,24 +5,24 @@ import loginService from './services/login'
 import Notification from './components/Notification'
 import Togglable from './components/Togglable'
 import BlogForm from './components/BlogForm'
-
+import { useDispatch, useSelector } from 'react-redux'
+import { setNotification } from './reducers/messageReducer'
+import { initializeBlogs, createBlog, likeBlog, deleteBlog } from './reducers/blogReducer'
+import { setUser } from './reducers/userReducer'
 
 const App = () => {
-  const [blogs, setBlogs] = useState([])
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
-  const [message, setMessage] = useState({ message: null, color: null })
-  const [user, setUser] = useState(null)
+  const dispatch = useDispatch()
+  const { message, user, blogs } = useSelector(state => state)
   const blogFormRef = useRef()
   useEffect(() => {
-    blogService.getAll().then(blogs =>
-      setBlogs(blogs.sort((a, b) => b.likes - a.likes))
-    )
+    dispatch(initializeBlogs())
   }, [])
   useEffect(() => {
     const existingUser = JSON.parse(window.localStorage.getItem('loggedBlogUser'))
     if (existingUser) {
-      setUser(existingUser)
+      dispatch(setUser(existingUser))
       blogService.setToken(existingUser.token)
     }
 
@@ -40,56 +40,29 @@ const App = () => {
         'loggedBlogUser', JSON.stringify(user)
       )
       blogService.setToken(user.token)
-      setUser(user)
-      setMessage({ message: 'login succesful', color: 'green' })
-      setTimeout(() => {
-        setMessage({ message: null })
-      }, 3000)
+      dispatch(setUser(user))
+      dispatch(setNotification({ message: 'login succesful', color: 'green' }, 5))
     } catch (exception) {
-      setMessage({ message: 'wrong username/password', color: 'red' })
-      setTimeout(() => {
-        setMessage({ message: null })
-      }, 5000)
+      dispatch(setNotification({ message: 'wrong username/password', color: 'red' }, 5))
     }
   }
 
   const handleBlog = (blog) => {
     blogFormRef.current.toggleVisibility()
-    blogService.createBlog(blog)
-      .then(response => {
-        console.log(response)
-        setBlogs(blogs.concat(response).sort((a, b) => b.likes - a.likes))
-        setMessage({ message: `a new blog ${blog.title} by ${blog.author} added`, color: 'green' })
-        setTimeout(() => {
-          setMessage({ message: null })
-        }, 3000)
-      })
-      .catch(result => {
-        console.log(result)
-        setMessage({ message: 'adding blog failed, title and url are required fields.', color: 'red' })
-        setTimeout(() => {
-          setMessage({ message: null })
-        }, 3000)
-      })
+    try {
+      dispatch(createBlog(blog))
+      dispatch(setNotification({ message: `a new blog ${blog.title} by ${blog.author} added`, color: 'green' }, 5))
+    } catch (erreur) {
+      console.log(erreur)
+      dispatch(setNotification({ message: 'adding blog failed, title and url are required fields.', color: 'red' }, 5))
+    }
   }
   const addLike = (blog) => {
-    blogService.update({ ...blog, likes: blog.likes + 1 })
     console.log(blogs)
-    setBlogs(blogs.
-      map(n => n.id !== blog.id
-        ? n
-        : { ...blog, likes: blog.likes + 1 })
-      .sort((a, b) => b.likes - a.likes)
-    )
+    dispatch(likeBlog(blog))
   }
   const removeBlog = (blog) => {
-    blogService.remove(blog)
-      .then(() => {
-        setBlogs(blogs.filter(n => n !== blog))
-      })
-      .catch(exception => {
-        console.log(exception)
-      })
+    dispatch(deleteBlog(blog))
   }
 
   const blogForm = () => (
@@ -100,12 +73,9 @@ const App = () => {
 
   const logout = () => {
     window.localStorage.removeItem('loggedBlogUser')
-    setUser(null)
+    dispatch(setUser(null))
 
-    setMessage({ message: 'you logged yourself out', color: 'green' })
-    setTimeout(() => {
-      setMessage({ message: null })
-    }, 3000)
+    dispatch(setNotification({ message: 'you logged yourself out', color: 'green' }, 5))
   }
 
   if (user === null) {
