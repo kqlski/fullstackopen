@@ -9,15 +9,20 @@ import { useDispatch, useSelector } from 'react-redux'
 import { setNotification } from './reducers/messageReducer'
 import { initializeBlogs, createBlog, likeBlog, deleteBlog } from './reducers/blogReducer'
 import { setUser } from './reducers/userReducer'
-
+import { Routes, Route, Link, useMatch } from 'react-router-dom'
+import { initializeUsers } from './reducers/usersReducer'
 const App = () => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const dispatch = useDispatch()
-  const { message, user, blogs } = useSelector(state => state)
+  const { message, user, blogs, users } = useSelector(state => state)
   const blogFormRef = useRef()
   useEffect(() => {
     dispatch(initializeBlogs())
+  }, [])
+  useEffect(() => {
+    dispatch(initializeUsers())
+
   }, [])
   useEffect(() => {
     const existingUser = JSON.parse(window.localStorage.getItem('loggedBlogUser'))
@@ -77,6 +82,29 @@ const App = () => {
 
     dispatch(setNotification({ message: 'you logged yourself out', color: 'green' }, 5))
   }
+  const UserPage = ({ user }) => {
+    if (!user) {
+      return null
+    }
+    return (
+      <div>
+        <h3>{user.username}</h3>
+        <h3>added blogs</h3>
+        <ul>
+          {user.blogs.map(n => <li key={n.id}><Link to={`/blogs/${n.id}`}>{n.title}</Link></li>)}
+        </ul>
+      </div >
+    )
+  }
+
+  const matchUser = useMatch('/users/:id')
+  const matchBlog = useMatch('/blogs/:id')
+  const userPage = matchUser
+    ? users.find(n => n.id === matchUser.params.id)
+    : null
+  const blogPage = matchBlog
+    ? blogs.find(n => n.id === matchBlog.params.id)
+    : null
 
   if (user === null) {
     return (
@@ -106,11 +134,25 @@ const App = () => {
       <h2>blogs</h2>
       <Notification message={message.message} color={message.color} />
       <p>{user.name} logged in<button type='button' onClick={logout}>logout</button></p>
-      {blogForm()}
-      {blogs.map(blog =>
-        <Blog className='blog' key={blog.id} blog={blog} addLike={addLike} remove={removeBlog} userId={user.id} />
-      )}
-    </div>
+
+      <Routes>
+        <Route path='/blogs/:id' element={<Blog className='blog' blog={blogPage} addLike={addLike} remove={removeBlog} userId={user.id} />} />
+        <Route path='/users/:id' element={<UserPage user={userPage} />} />
+        <Route path='/users' element={<div>
+          <h3>Users</h3>
+          <ul style={{ listStyleType: 'none' }}>
+            {users.map(n => <li key={n.id}><Link to={`${n.id}`}>{n.username}</Link><span style={{ marginLeft: '5px' }}>{n.blogs.length} blogs</span></li>)}
+          </ul>
+        </div>} />
+        <Route path='/' element={
+          <div>
+            {blogForm()}
+            {blogs.map(blog =>
+              <li key={blog.id}><Link to={`/blogs/${blog.id}`}> {blog.title} {blog.author}</Link></li>
+            )}
+          </div>} />
+      </Routes >
+    </div >
   )
 }
 

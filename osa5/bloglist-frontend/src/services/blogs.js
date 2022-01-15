@@ -14,6 +14,16 @@ const createBlog = (newBlog) => {
   const request = axios.post(baseUrl, newBlog, config)
   return request.then(response => response.data)
 }
+export const createComment = (comment, id, blogs, setComment) => {
+  console.log(comment)
+  const request = axios.post(`${baseUrl}/${id}/comments`, { comment })
+  return request.then(response => {
+    if (response.status === 200) {
+      setComment(blogs.concat(comment))
+    }
+    return response.data
+  })
+}
 const getAll = () => {
   const request = axios.get(baseUrl)
   return request.then(response => response.data)
