@@ -1,3 +1,4 @@
 /fullstack_harjoittelut
 osa5/bloglist-frontend/.eslintrc.js
 node_modules/
+.env
