@@ -38,7 +38,10 @@ const parseGender = (gender: unknown): Gender => {
   return gender;
 };
 const parseEntries = (entries: unknown): Entry[] => {
-  if (!entries || !isEntries(entries)) {
+  if(!entries){
+    return [];
+  }
+  if ( !isEntries(entries)) {
     throw new Error('incorrect Entries: ' + entries);
   }
   return entries;
