@@ -6,6 +6,15 @@ const router = express.Router();
 router.get('/', (_req, res) => {
   res.send(patientService.getSafeEntries());
 });
+router.get('/:id', (req, res) => {
+  const id=req.params.id;
+    const patient = patientService.findPatientById(id);
+    if(!patient){
+      return res.sendStatus(404);
+    }
+    return res.send(patient);
+});
+
 router.post('/', (req, res) => {
   try {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-argument

@@ -1,12 +1,17 @@
-export type PatientData = {
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
+export interface Entry{
+
+}
+export interface PatientData {
   id: string;
   name: string;
   dateOfBirth: string;
   ssn: string;
   gender: Gender;
   occupation: string;
-};
-export type NonSensitivePatientData = Omit<PatientData, 'ssn'>;
+  entries:Entry[];
+}
+export type NonSensitivePatientData = Omit<PatientData, 'ssn'|'entries'>;
 
 export type NewPatientData = Omit<PatientData, 'id'>;
 

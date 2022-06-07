@@ -14,6 +14,9 @@ const getSafeEntries = (): NonSensitivePatientData[] => {
     occupation
   }));
 };
+const findPatientById = (id: string): PatientData|undefined => {
+  return patientEntries.find(patient => patient.id === id);
+};
 const addPatient = (object: NewPatientData): PatientData => {
   const newPatient = { ...object, id: uuid() };
   patientEntries.push(newPatient);
@@ -22,5 +25,6 @@ const addPatient = (object: NewPatientData): PatientData => {
 export default {
   getEntries,
   getSafeEntries,
-  addPatient
+  addPatient,
+  findPatientById
 };
