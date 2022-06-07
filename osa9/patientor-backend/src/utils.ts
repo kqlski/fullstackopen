@@ -1,15 +1,15 @@
-import { Gender, NewPatientData } from "./types";
+import { Entry, EntryTypes, Gender, NewPatientData } from "./types";
 
-type Fields = { name: unknown, dateOfBirth: unknown, ssn: unknown, gender: unknown, occupation: unknown };
+type Fields = { name: unknown, dateOfBirth: unknown, ssn: unknown, gender: unknown, occupation: unknown, entries: unknown };
 
-const toNewPatientData = ({ name, dateOfBirth, ssn, gender, occupation }: Fields): NewPatientData => {
+const toNewPatientData = ({ name, dateOfBirth, ssn, gender, occupation, entries }: Fields): NewPatientData => {
   const newPatient: NewPatientData = {
     name: parseString(name),
     dateOfBirth: parseDate(dateOfBirth),
     ssn: parseSSN(ssn),
     gender: parseGender(gender),
     occupation: parseString(occupation),
-    entries:[]
+    entries: parseEntries(entries)
   };
   return newPatient;
 };
@@ -37,6 +37,12 @@ const parseGender = (gender: unknown): Gender => {
   }
   return gender;
 };
+const parseEntries = (entries: unknown): Entry[] => {
+  if (!entries || !isEntries(entries)) {
+    throw new Error('incorrect Entries: ' + entries);
+  }
+  return entries;
+};
 const isDate = (date: string): boolean => {
   return Boolean(Date.parse(date));
 };
@@ -51,6 +57,15 @@ const isSSN = (ssn: string): boolean => {
 const isGender = (param: any): param is Gender => {
   // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
   return Object.values(Gender).includes(param);
+};
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const isEntries = (param: any): param is Entry[] => {
+  return Array.isArray(param) && param.every(entry => isEntry(entry));
+};
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const isEntry = (param: any): param is Entry => {
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+  return param instanceof Object && Object.values(EntryTypes).includes(param.type);
 };
 
 
