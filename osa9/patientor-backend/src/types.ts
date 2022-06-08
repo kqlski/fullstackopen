@@ -30,17 +30,22 @@ export interface SickLeave {
 interface OccupationalHealthcareEntry extends BaseEntry {
   type: 'OccupationalHealthcare';
   sickLeave: SickLeave;
-  employerName:string;
+  employerName: string;
 }
 export enum EntryTypes {
   HospitalEntry = 'Hospital',
-  OccupationalHealthcareEntry='OccupationalHealthcare',
-  HealthCheckEntry='HealthCheck'
+  OccupationalHealthcareEntry = 'OccupationalHealthcare',
+  HealthCheckEntry = 'HealthCheck'
 }
 export type Entry =
   | HospitalEntry
   | OccupationalHealthcareEntry
   | HealthCheckEntry;
+
+type UnionOmit<T, K extends string | number | symbol> = T extends unknown ? Omit<T, K> : never;
+
+export type NewEntry = UnionOmit<Entry, 'id'>;
+
 export interface PatientData {
   id: string;
   name: string;
