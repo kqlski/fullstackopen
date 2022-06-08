@@ -146,22 +146,20 @@ const isHealthCheckRating = (param: any): param is HealthCheckRating => {
   // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
   return Object.values(HealthCheckRating).includes(param);
 };
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const isEntries = (param: any): param is Entry[] => {
+const isEntries = (param: unknown): param is Entry[] => {
   return Array.isArray(param) && param.every(entry => isEntry(entry));
 };
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const isEntry = (param: any): param is Entry => {
   // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-  return param instanceof Object && Object.values(EntryTypes).includes(param.type);
+  return param instanceof Object && 'type' in param &&Object.values(EntryTypes).includes(param.type);
 };
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const isEntryType = (param: any): param is Entry['type'] => {
   // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
   return Object.values(EntryTypes).includes(param);
 };
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const isDiagnosisCodes = (param: any): param is Array<Diagnosis['code']> => {
+const isDiagnosisCodes = (param: unknown): param is Array<Diagnosis['code']> => {
   return Array.isArray(param) && param.every(code => isString(code) && diagnosesEntries.map(diag => diag.code).includes(code));
 };
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
