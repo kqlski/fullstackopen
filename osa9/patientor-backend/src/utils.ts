@@ -115,7 +115,7 @@ const parseSickLeave = (sickLeave: unknown): SickLeave => {
   return sickLeave;
 };
 const parseHealthCheckRating = (healthCheckRating: unknown): HealthCheckRating => {
-  if (!healthCheckRating || !isHealthCheckRating(healthCheckRating)) {
+  if (healthCheckRating === undefined || !isHealthCheckRating(healthCheckRating)) {
     throw new Error('Incorrect or missing healthCheckRating: ' + healthCheckRating);
   }
   return healthCheckRating;
@@ -152,7 +152,7 @@ const isEntries = (param: unknown): param is Entry[] => {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const isEntry = (param: any): param is Entry => {
   // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-  return param instanceof Object && 'type' in param &&Object.values(EntryTypes).includes(param.type);
+  return param instanceof Object && 'type' in param && Object.values(EntryTypes).includes(param.type);
 };
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const isEntryType = (param: any): param is Entry['type'] => {
